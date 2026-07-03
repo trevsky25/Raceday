@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-asphalt-950 text-white antialiased;
+  }
+  body {
+    @apply font-body min-h-screen;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255, 212, 0, 0.06), transparent),
+      repeating-linear-gradient(
+        135deg,
+        transparent 0px,
+        transparent 40px,
+        rgba(255, 255, 255, 0.008) 40px,
+        rgba(255, 255, 255, 0.008) 80px
+      );
+  }
+}
+
+@layer components {
+  .display-head {
+    @apply font-display uppercase tracking-wide;
+  }
+  .checker-strip {
+    height: 10px;
+    background-image: repeating-conic-gradient(#fff 0% 25%, #0b0c0e 0% 50%);
+    background-size: 20px 20px;
+  }
+  .btn-caution {
+    @apply inline-block bg-caution text-asphalt-950 font-display uppercase tracking-wider px-6 py-3 text-lg
+      hover:shadow-glow transition-shadow duration-200 select-none;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  }
+  .btn-ghost {
+    @apply inline-block border border-asphalt-600 text-white font-display uppercase tracking-wider px-6 py-3 text-lg
+      hover:border-caution hover:text-caution transition-colors duration-200 select-none;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  }
+  .card {
+    @apply bg-asphalt-900 border border-asphalt-700 rounded-sm;
+  }
+  .input-dark {
+    @apply w-full bg-asphalt-800 border border-asphalt-600 rounded-sm px-3 py-2 text-white
+      placeholder-asphalt-400 focus:outline-none focus:border-caution;
+  }
+}
+
+/* Scrollbar that matches the pit wall */
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #111317;
+}
+::-webkit-scrollbar-thumb {
+  background: #2f343d;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c7a600;
+}
