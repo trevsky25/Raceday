@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  .canvas {
+    position: relative;
+    width: 1200px;
+    height: 630px;
+    background: #0b0c0e;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+  .photo {
+    position: absolute;
+    inset: 0;
+    background-image: url('daytona.jpg');
+    background-size: 118%;
+    background-position: 30% 68%;
+    filter: saturate(1.35) contrast(1.1) brightness(1.08);
+  }
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(100deg,
+        rgba(6, 7, 9, 0.96) 0%,
+        rgba(6, 7, 9, 0.85) 28%,
+        rgba(6, 7, 9, 0.35) 55%,
+        rgba(6, 7, 9, 0.05) 78%,
+        rgba(6, 7, 9, 0.35) 100%),
+      radial-gradient(ellipse 120% 90% at 85% 115%, transparent 45%, rgba(6,7,9,0.4) 100%);
+  }
+  .checker {
+    position: absolute;
+    left: 0; right: 0;
+    height: 16px;
+    background-image: repeating-conic-gradient(#f5f5f5 0% 25%, #0b0c0e 0% 50%);
+    background-size: 32px 32px;
+    z-index: 5;
+  }
+  .checker.top { top: 0; }
+  .checker.bottom { bottom: 0; }
+  .content {
+    position: absolute;
+    left: 64px;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 3;
+  }
+  .kicker {
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: 8px;
+    color: #d3d6db;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .kicker .flag { letter-spacing: 0; }
+  h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: 190px;
+    line-height: 0.92;
+    letter-spacing: 2px;
+    color: #ffffff;
+    text-transform: uppercase;
+    text-shadow: 0 6px 40px rgba(0,0,0,0.6);
+  }
+  h1 .yellow { color: #ffd400; }
+  .rule {
+    width: 460px;
+    height: 5px;
+    margin: 26px 0 22px;
+    background: linear-gradient(90deg, #ffd400 0%, #ffd400 60%, transparent 100%);
+  }
+  .stats {
+    font-weight: 600;
+    font-size: 34px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: #ffffff;
+    margin-bottom: 34px;
+  }
+  .stats .dot { color: #ffd400; padding: 0 10px; }
+  .cta {
+    display: inline-block;
+    align-self: flex-start;
+    background: #ffd400;
+    color: #0b0c0e;
+    font-family: 'Anton', sans-serif;
+    font-size: 34px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 18px 44px;
+    clip-path: polygon(16px 0, 100% 0, calc(100% - 16px) 100%, 0 100%);
+    box-shadow: 0 0 60px rgba(255, 212, 0, 0.35);
+  }
+  .credit {
+    position: absolute;
+    right: 20px;
+    bottom: 26px;
+    z-index: 4;
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="photo"></div>
+    <div class="overlay"></div>
+    <div class="checker top"></div>
+    <div class="checker bottom"></div>
+    <div class="content">
+      <div class="kicker"><span class="flag">🏁</span>&nbsp; The season-long race pool</div>
+      <h1>RACE<span class="yellow">DAY</span></h1>
+      <div class="rule"></div>
+      <div class="stats">18 races <span class="dot">·</span> 37 cars <span class="dot">·</span> every pick counts</div>
+      <div class="cta">Get your picks in</div>
+    </div>
+    <div class="credit">Photo: Zach Catanzareti · CC BY 2.0</div>
+  </div>
+</body>
+</html>
