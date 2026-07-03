@@ -171,7 +171,7 @@ export default function PickGrid({ races, cars, picks, onPick, driverData }: Pro
                             onClick={() =>
                               setSheet({ carNumber: car.car_number, raceId: race.id })
                             }
-                            className={`absolute top-0 right-0 w-5 h-5 flex items-center justify-center text-[11px] leading-none font-semibold ${
+                            className={`absolute top-0 right-0 w-7 h-7 flex items-center justify-center text-[13px] leading-none font-semibold ${
                               isMine
                                 ? 'text-asphalt-950/60 hover:text-asphalt-950'
                                 : 'text-asphalt-500 hover:text-caution'

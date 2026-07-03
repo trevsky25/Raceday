@@ -203,7 +203,7 @@ export default function Enter() {
       return null
     }
     return (
-      <div className="space-y-6 pb-28">
+      <div className="space-y-6 pb-32 sm:pb-28">
         <div>
           <h1 className="display-head text-4xl">
             {mode.entry ? 'Edit' : 'New'} <span className="text-caution">entry</span>
@@ -242,13 +242,17 @@ export default function Enter() {
           }}
         />
 
-        {/* Sticky pit board: progress + submit */}
-        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-asphalt-600 bg-asphalt-900/95 backdrop-blur">
-          <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
+        {/* Sticky pit board: progress + submit. Sits ABOVE the mobile tab bar
+            (z-50 vs z-40) — while editing, picking is the only job. */}
+        <div
+          className="fixed bottom-0 left-0 right-0 z-50 border-t border-asphalt-600 bg-asphalt-900/95 backdrop-blur"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+        >
+          <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
             <div className="flex-1 min-w-0">
-              <div className="font-condensed uppercase tracking-widest text-xs text-asphalt-400">
-                {pickedCount}/{races.length} picks ·{' '}
-                {activeCarCount - pickedCount} cars left in the garage
+              <div className="font-condensed uppercase tracking-widest text-xs text-asphalt-400 truncate">
+                {pickedCount}/{races.length} picked ·{' '}
+                {activeCarCount - pickedCount} cars left
               </div>
               <div className="h-1.5 bg-asphalt-700 mt-1.5 rounded-full overflow-hidden">
                 <div
@@ -256,17 +260,20 @@ export default function Enter() {
                   style={{ width: `${(pickedCount / Math.max(races.length, 1)) * 100}%` }}
                 />
               </div>
-              {error && <p className="text-penalty text-sm mt-1">{error}</p>}
+              {error && <p className="text-penalty text-xs sm:text-sm mt-1">{error}</p>}
             </div>
-            <button onClick={() => setMode({ kind: 'list' })} className="btn-ghost !px-4 !text-sm">
+            <button
+              onClick={() => setMode({ kind: 'list' })}
+              className="btn-ghost !px-3 sm:!px-4 !text-sm shrink-0"
+            >
               Cancel
             </button>
             <button
               onClick={() => void submit()}
               disabled={saving || pickedCount !== races.length}
-              className="btn-caution !px-4 !text-sm disabled:opacity-40"
+              className="btn-caution !px-3 sm:!px-4 !text-sm disabled:opacity-40 shrink-0"
             >
-              {saving ? 'Saving…' : mode.entry ? 'Save Changes' : 'Submit Entry'}
+              {saving ? 'Saving…' : mode.entry ? 'Save' : 'Submit'}
             </button>
           </div>
         </div>
