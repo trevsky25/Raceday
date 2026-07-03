@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
@@ -7,16 +8,84 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   }`
 
 const tabClass = ({ isActive }: { isActive: boolean }) =>
-  `flex-1 flex flex-col items-center justify-center gap-0.5 py-2 transition-colors ${
+  `flex-1 flex flex-col items-center justify-center gap-1 py-2 transition-colors ${
     isActive ? 'text-caution' : 'text-asphalt-400'
   }`
 
-function Tab({ to, icon, label }: { to: string; icon: string; label: string }) {
+const iconProps = {
+  width: 22,
+  height: 22,
+  viewBox: '0 0 24 24',
+  fill: 'none',
+  stroke: 'currentColor',
+  strokeWidth: 1.8,
+  strokeLinecap: 'round',
+  strokeLinejoin: 'round',
+} as const
+
+function FlagIcon() {
+  return (
+    <svg {...iconProps} aria-hidden="true">
+      <path d="M4 22V3" />
+      <path d="M4 4h15v10H4" />
+      <rect x="5.5" y="5.5" width="3" height="3" fill="currentColor" stroke="none" />
+      <rect x="11.5" y="5.5" width="3" height="3" fill="currentColor" stroke="none" />
+      <rect x="8.5" y="8.5" width="3" height="3" fill="currentColor" stroke="none" />
+      <rect x="14.5" y="8.5" width="3" height="3" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+function TrophyIcon() {
+  return (
+    <svg {...iconProps} aria-hidden="true">
+      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+      <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+      <path d="M4 22h16" />
+      <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+      <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+      <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+    </svg>
+  )
+}
+
+function WheelIcon() {
+  return (
+    <svg {...iconProps} aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="2.5" />
+      <path d="M12 14.5V21" />
+      <path d="M9.6 11.3 3.2 10" />
+      <path d="m14.4 11.3 6.4-1.3" />
+    </svg>
+  )
+}
+
+function ClipboardIcon() {
+  return (
+    <svg {...iconProps} aria-hidden="true">
+      <rect x="8" y="2" width="8" height="4" rx="1" />
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <path d="M12 11h4" />
+      <path d="M12 16h4" />
+      <path d="M8 11h.01" />
+      <path d="M8 16h.01" />
+    </svg>
+  )
+}
+
+function WrenchIcon() {
+  return (
+    <svg {...iconProps} aria-hidden="true">
+      <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+    </svg>
+  )
+}
+
+function Tab({ to, icon, label }: { to: string; icon: ReactNode; label: string }) {
   return (
     <NavLink to={to} className={tabClass} end={to === '/'}>
-      <span className="text-xl leading-none" aria-hidden="true">
-        {icon}
-      </span>
+      {icon}
       <span className="font-condensed uppercase tracking-widest text-[10px]">
         {label}
       </span>
@@ -119,11 +188,11 @@ export default function Layout() {
         className="sm:hidden fixed bottom-0 left-0 right-0 z-40 flex border-t border-asphalt-600 bg-asphalt-900/95 backdrop-blur"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
-        <Tab to="/" icon="🏁" label="Home" />
-        <Tab to="/standings" icon="🏆" label="Standings" />
-        <Tab to="/drivers" icon="🏎️" label="Garage" />
-        <Tab to="/enter" icon="📋" label="My Entry" />
-        {profile?.is_admin && <Tab to="/admin" icon="🔧" label="Pit Boss" />}
+        <Tab to="/" icon={<FlagIcon />} label="Home" />
+        <Tab to="/standings" icon={<TrophyIcon />} label="Standings" />
+        <Tab to="/drivers" icon={<WheelIcon />} label="Garage" />
+        <Tab to="/enter" icon={<ClipboardIcon />} label="My Entry" />
+        {profile?.is_admin && <Tab to="/admin" icon={<WrenchIcon />} label="Pit Boss" />}
       </nav>
     </div>
   )

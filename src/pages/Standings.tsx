@@ -52,8 +52,9 @@ export default function Standings() {
             No checkered flags yet<span className="text-caution">.</span>
           </div>
           <p className="text-asphalt-400">
-            {data?.entries.length ?? 0} entries are on the grid. Standings appear
-            as soon as the first race results are in.
+            {data?.entries.length ?? 0}{' '}
+            {(data?.entries.length ?? 0) === 1 ? 'entry is' : 'entries are'} on
+            the grid. Standings appear as soon as the first race results are in.
           </p>
           <Link to="/enter" className="btn-caution mt-2">
             Get Your Entry In
