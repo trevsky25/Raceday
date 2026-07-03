@@ -8,6 +8,8 @@ import Enter from './pages/Enter'
 import Standings from './pages/Standings'
 import EntryDetail from './pages/EntryDetail'
 import Admin from './pages/Admin'
+import Drivers from './pages/Drivers'
+import DriverDetail from './pages/DriverDetail'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,6 +29,8 @@ export default function App() {
               <Route path="/enter" element={<Enter />} />
               <Route path="/standings" element={<Standings />} />
               <Route path="/entry/:id" element={<EntryDetail />} />
+              <Route path="/drivers" element={<Drivers />} />
+              <Route path="/driver/:carNumber" element={<DriverDetail />} />
               <Route path="/admin" element={<Admin />} />
             </Route>
           </Routes>

@@ -64,6 +64,16 @@ Auth → URL Configuration:
 
 Without this, magic-link emails redirect to the wrong host.
 
+## Driver intelligence
+
+`driver_profiles` (bio, career, current-season form, Wikimedia headshot) and
+`driver_track_stats` (career record at each track on this half's schedule)
+power the Garage (`/drivers`), driver detail pages (`/driver/:carNumber`), and
+the per-track stat badges + tap-in stat sheets inside the pick grid. Data was
+researched from public racing-stats sources in July 2026 and is admin-editable
+in the DB; anything unsourced is null and renders as "no history". Live
+pool-half form is computed from our own `results` table as races complete.
+
 ## Not yet built (Phase 2+)
 
 - Weekly results email (Resend) — Scott currently shares the standings link

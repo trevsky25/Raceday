@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { useSeason, entryWindowOpen } from '../hooks/useSeason'
+import { useDrivers } from '../hooks/useDrivers'
 import PickGrid from '../components/PickGrid'
 import type { Entry, Pick } from '../lib/types'
 
@@ -16,6 +17,7 @@ export default function Enter() {
 
   const seasonId = seasonData?.season.id
   const userId = session?.user.id
+  const { data: driverData } = useDrivers(seasonId, seasonData?.races ?? [])
 
   const { data: myEntries } = useQuery({
     queryKey: ['my-entries', seasonId, userId],
@@ -228,6 +230,7 @@ export default function Enter() {
         <PickGrid
           races={races}
           cars={cars}
+          driverData={driverData}
           picks={picks}
           onPick={(raceId, carNumber) => {
             setPicks((prev) => {

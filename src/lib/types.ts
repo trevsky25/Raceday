@@ -66,3 +66,38 @@ export interface RaceResult {
   car_number: number
   finish_position: number | null
 }
+
+export interface DriverProfile {
+  id: string
+  season_id: string
+  car_number: number
+  team: string | null
+  hometown: string | null
+  birth_date: string | null
+  rookie_year: number | null
+  championships: number
+  career_starts: number | null
+  career_wins: number | null
+  career_top5: number | null
+  career_top10: number | null
+  career_poles: number | null
+  season_year: number | null
+  season_wins: number | null
+  season_top5: number | null
+  season_top10: number | null
+  season_avg_finish: number | null
+  photo_url: string | null
+  one_liner: string | null
+}
+
+export interface DriverTrackStat {
+  id: string
+  race_id: string
+  car_number: number
+  starts: number | null
+  wins: number | null
+  top5: number | null
+  top10: number | null
+  avg_finish: number | null
+  best_finish: number | null
+}

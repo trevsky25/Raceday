@@ -21,6 +21,9 @@ export default function Layout() {
             <NavLink to="/standings" className={navLinkClass}>
               Standings
             </NavLink>
+            <NavLink to="/drivers" className={navLinkClass}>
+              Drivers
+            </NavLink>
             <NavLink to="/enter" className={navLinkClass}>
               My Entry
             </NavLink>

@@ -1,19 +1,26 @@
 import { useState } from 'react'
 import type { Car, Race } from '../lib/types'
+import type { DriverData } from '../hooks/useDrivers'
+import { formatAvg } from '../lib/driverStats'
+import DriverSheet from './DriverSheet'
 
 interface Props {
   races: Race[]
   cars: Car[]
   picks: Record<string, number> // race_id -> car_number
   onPick: (raceId: string, carNumber: number | null) => void
+  driverData?: DriverData
 }
 
 /**
  * Mobile-first pick grid: one accordion row per race, tap to open the car
  * selector. Cars gray out everywhere once used (the use-once rule, live).
+ * Each chip shows the driver's average finish at THAT race's track; the ⓘ
+ * opens the full driver stat sheet.
  */
-export default function PickGrid({ races, cars, picks, onPick }: Props) {
+export default function PickGrid({ races, cars, picks, onPick, driverData }: Props) {
   const [openRace, setOpenRace] = useState<string | null>(races[0]?.id ?? null)
+  const [sheet, setSheet] = useState<{ carNumber: number; raceId: string } | null>(null)
 
   const activeCars = cars.filter((c) => c.is_active)
   const usedBy = new Map<number, string>() // car_number -> race_id
@@ -22,12 +29,18 @@ export default function PickGrid({ races, cars, picks, onPick }: Props) {
   }
   const raceNumberById = new Map(races.map((r) => [r.id, r.race_number]))
 
+  const advanceFrom = (raceId: string) => {
+    const next = races.find((r) => r.id !== raceId && picks[r.id] == null)
+    setOpenRace(next?.id ?? null)
+  }
+
   return (
     <div className="space-y-2">
       {races.map((race) => {
         const picked = picks[race.id]
         const pickedCar = activeCars.find((c) => c.car_number === picked)
         const isOpen = openRace === race.id
+        const statsForRace = driverData?.trackStats.get(race.id)
         return (
           <div key={race.id} className="card overflow-hidden">
             <button
@@ -67,47 +80,81 @@ export default function PickGrid({ races, cars, picks, onPick }: Props) {
 
             {isOpen && (
               <div className="border-t border-asphalt-700 p-3">
-                <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-1.5">
+                <div className="flex items-baseline justify-between mb-2 px-0.5">
+                  <span className="font-condensed uppercase tracking-widest text-[11px] text-asphalt-400">
+                    Avg = career avg finish at {race.location}
+                  </span>
+                  <span className="font-condensed uppercase tracking-widest text-[11px] text-asphalt-400">
+                    ⓘ = full stats
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-1.5">
                   {activeCars.map((car) => {
                     const usedInRace = usedBy.get(car.car_number)
                     const isMine = usedInRace === race.id
                     const isUsedElsewhere = usedInRace && !isMine
+                    const trackStat = statsForRace?.get(car.car_number)
                     return (
-                      <button
-                        key={car.id}
-                        type="button"
-                        disabled={!!isUsedElsewhere}
-                        onClick={() => {
-                          onPick(race.id, isMine ? null : car.car_number)
-                          if (!isMine) {
-                            const next = races.find(
-                              (r) => r.id !== race.id && picks[r.id] == null,
-                            )
-                            setOpenRace(next?.id ?? null)
+                      <div key={car.id} className="relative">
+                        <button
+                          type="button"
+                          disabled={!!isUsedElsewhere}
+                          onClick={() => {
+                            onPick(race.id, isMine ? null : car.car_number)
+                            if (!isMine) advanceFrom(race.id)
+                          }}
+                          title={
+                            isUsedElsewhere
+                              ? `Used in WK ${raceNumberById.get(usedInRace)}`
+                              : `${car.driver_name} (${car.manufacturer})`
                           }
-                        }}
-                        title={
-                          isUsedElsewhere
-                            ? `Used in WK ${raceNumberById.get(usedInRace)}`
-                            : `${car.driver_name} (${car.manufacturer})`
-                        }
-                        className={`px-1 py-2 text-center border transition-colors ${
-                          isMine
-                            ? 'bg-caution text-asphalt-950 border-caution'
-                            : isUsedElsewhere
-                              ? 'bg-asphalt-800 border-asphalt-800 text-asphalt-600 cursor-not-allowed'
-                              : 'border-asphalt-600 hover:border-caution hover:text-caution'
-                        }`}
-                      >
-                        <span className="font-display block text-base leading-none">
-                          {car.car_number}
-                        </span>
-                        <span className="font-condensed block text-[10px] leading-tight truncate opacity-80">
-                          {isUsedElsewhere
-                            ? `WK ${raceNumberById.get(usedInRace)}`
-                            : car.driver_name.split(' ').slice(-1)[0]}
-                        </span>
-                      </button>
+                          className={`w-full px-1 pt-1.5 pb-1 text-center border transition-colors ${
+                            isMine
+                              ? 'bg-caution text-asphalt-950 border-caution'
+                              : isUsedElsewhere
+                                ? 'bg-asphalt-800 border-asphalt-800 text-asphalt-600 cursor-not-allowed'
+                                : 'border-asphalt-600 hover:border-caution hover:text-caution'
+                          }`}
+                        >
+                          <span className="font-display block text-lg leading-none">
+                            {car.car_number}
+                          </span>
+                          <span className="font-condensed block text-[10px] leading-tight truncate opacity-80">
+                            {car.driver_name.split(' ').slice(-1)[0]}
+                          </span>
+                          <span
+                            className={`font-condensed block text-[10px] leading-tight ${
+                              isMine
+                                ? 'text-asphalt-950/70'
+                                : isUsedElsewhere
+                                  ? 'text-asphalt-600'
+                                  : 'text-asphalt-400'
+                            }`}
+                          >
+                            {isUsedElsewhere
+                              ? `WK ${raceNumberById.get(usedInRace)}`
+                              : trackStat?.avg_finish != null
+                                ? `avg ${formatAvg(trackStat.avg_finish)}`
+                                : 'no history'}
+                          </span>
+                        </button>
+                        {!isUsedElsewhere && (
+                          <button
+                            type="button"
+                            aria-label={`Stats for ${car.driver_name}`}
+                            onClick={() =>
+                              setSheet({ carNumber: car.car_number, raceId: race.id })
+                            }
+                            className={`absolute top-0 right-0 w-5 h-5 flex items-center justify-center text-[11px] leading-none font-semibold ${
+                              isMine
+                                ? 'text-asphalt-950/60 hover:text-asphalt-950'
+                                : 'text-asphalt-500 hover:text-caution'
+                            }`}
+                          >
+                            ⓘ
+                          </button>
+                        )}
+                      </div>
                     )
                   })}
                 </div>
@@ -116,6 +163,24 @@ export default function PickGrid({ races, cars, picks, onPick }: Props) {
           </div>
         )
       })}
+
+      {sheet && (
+        <DriverSheet
+          carNumber={sheet.carNumber}
+          raceId={sheet.raceId}
+          onClose={() => setSheet(null)}
+          onPick={
+            usedBy.get(sheet.carNumber) === undefined ||
+            usedBy.get(sheet.carNumber) === sheet.raceId
+              ? () => {
+                  onPick(sheet.raceId, sheet.carNumber)
+                  setSheet(null)
+                  advanceFrom(sheet.raceId)
+                }
+              : undefined
+          }
+        />
+      )}
     </div>
   )
 }

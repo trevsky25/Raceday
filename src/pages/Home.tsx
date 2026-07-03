@@ -71,6 +71,9 @@ export default function Home() {
               Submit Your Picks
             </Link>
           )}
+          <Link to="/drivers" className="btn-ghost">
+            Scout the Garage
+          </Link>
           <Link to="/standings" className="btn-ghost">
             Standings
           </Link>
