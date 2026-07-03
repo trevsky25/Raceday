@@ -124,6 +124,21 @@ export default function DriverDetail() {
             <BigStat label="Wins" value={String(liveForm.wins)} />
             <BigStat label="Best" value={liveForm.best ? ordinal(liveForm.best) : '—'} />
           </div>
+          {(driverData?.entryCount ?? 0) > 0 && (
+            <p className="font-condensed text-sm text-asphalt-400 mt-3">
+              <span className="font-display text-caution text-lg mr-1.5">
+                {Math.round(
+                  ((driverData!.usageByCar.get(carNumber) ?? 0) /
+                    driverData!.entryCount) *
+                    100,
+                )}
+                %
+              </span>
+              of the pool has already burned #{carNumber} (
+              {driverData!.usageByCar.get(carNumber) ?? 0} of{' '}
+              {driverData!.entryCount} entries).
+            </p>
+          )}
         </section>
       )}
 

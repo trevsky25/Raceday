@@ -59,10 +59,27 @@ where id = (select id from auth.users where email = 'scott@example.com');
 
 Auth → URL Configuration:
 
-1. Set **Site URL** to the production Netlify URL.
+1. Set **Site URL** to `https://raceday-pool.netlify.app`.
 2. Add `http://localhost:5173` to **Redirect URLs** for local dev.
 
-Without this, magic-link emails redirect to the wrong host.
+Without this, magic-link and OAuth redirects land on the wrong host.
+
+### Enabling Google sign-in
+
+The UI ships with a "Continue with Google" button; it activates once the
+provider is configured:
+
+1. In [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+   create an **OAuth client ID** (type: Web application).
+   - Authorized JavaScript origins: `https://raceday-pool.netlify.app`
+   - Authorized redirect URI:
+     `https://ygcdzmemhogavopbdiog.supabase.co/auth/v1/callback`
+2. In Supabase dashboard → Authentication → Sign In / Providers → **Google**:
+   enable it and paste the client ID + secret.
+
+Google and magic-link sign-ins with the same email resolve to the same
+account (Supabase links identities by verified email), so players can use
+either interchangeably.
 
 ## Driver intelligence
 

@@ -41,6 +41,12 @@ export default function DriverSheet({ carNumber, raceId, onClose, onPick }: Prop
   if (!car) return null
 
   const profile = driverData?.profiles.get(carNumber)
+  const completedCount =
+    seasonData?.races.filter((r) => r.status === 'complete').length ?? 0
+  const usedCount = driverData?.usageByCar.get(carNumber) ?? 0
+  const entryCount = driverData?.entryCount ?? 0
+  const usagePct =
+    entryCount > 0 ? Math.round((usedCount / entryCount) * 100) : 0
   const race = raceId ? seasonData?.races.find((r) => r.id === raceId) : null
   const trackStat = raceId ? driverData?.trackStats.get(raceId)?.get(carNumber) : null
   const liveForm = driverData
@@ -119,6 +125,21 @@ export default function DriverSheet({ carNumber, raceId, onClose, onPick }: Prop
                   No Cup Series history at this track — rookie territory.
                 </p>
               )}
+            </div>
+          )}
+
+          {completedCount > 0 && entryCount > 0 && (
+            <div className="card px-4 py-3 flex items-center justify-between gap-3">
+              <span className="font-condensed uppercase tracking-widest text-xs text-asphalt-400">
+                Pool usage
+              </span>
+              <span className="font-condensed text-sm">
+                <span className="font-display text-caution text-lg mr-1.5">
+                  {usagePct}%
+                </span>
+                of entries already burned #{car.car_number} ({usedCount} of{' '}
+                {entryCount})
+              </span>
             </div>
           )}
 

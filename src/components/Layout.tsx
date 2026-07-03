@@ -33,12 +33,20 @@ export default function Layout() {
               </NavLink>
             )}
             {session ? (
-              <button
-                onClick={() => void signOut()}
-                className="font-condensed uppercase tracking-widest text-sm px-3 py-2 text-asphalt-400 hover:text-penalty transition-colors"
-              >
-                Sign Out
-              </button>
+              <>
+                <span
+                  className="hidden sm:inline font-condensed uppercase tracking-widest text-xs text-leader px-2"
+                  title={`Signed in as ${session.user.email}`}
+                >
+                  ● {profile?.display_name ?? session.user.email?.split('@')[0]}
+                </span>
+                <button
+                  onClick={() => void signOut()}
+                  className="font-condensed uppercase tracking-widest text-sm px-3 py-2 text-asphalt-400 hover:text-penalty transition-colors"
+                >
+                  Sign Out
+                </button>
+              </>
             ) : (
               <NavLink to="/signin" className={navLinkClass}>
                 Sign In

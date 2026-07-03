@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { ageFrom, computeLiveForm, formatAvg } from '../src/lib/driverStats'
+import {
+  ageFrom,
+  bestAvailableAvg,
+  computeLiveForm,
+  computeUsage,
+  formatAvg,
+} from '../src/lib/driverStats'
 
 const races = [
   { id: 'r1', status: 'complete' as const },
@@ -38,6 +44,45 @@ describe('formatAvg', () => {
     expect(formatAvg(9.44)).toBe('9.4')
     expect(formatAvg(null)).toBe('—')
     expect(formatAvg(undefined)).toBe('—')
+  })
+})
+
+describe('bestAvailableAvg', () => {
+  const avgs = new Map<number, number | null>([
+    [5, 6.2],
+    [11, 14.5],
+    [84, 9.3],
+    [88, null], // no history at this track
+  ])
+
+  it('finds the lowest avg among available cars', () => {
+    expect(bestAvailableAvg([5, 11, 84, 88], avgs)).toBe(6.2)
+  })
+
+  it('recomputes as the garage empties (used cars excluded by caller)', () => {
+    expect(bestAvailableAvg([11, 84, 88], avgs)).toBe(9.3)
+  })
+
+  it('ignores cars with no history and handles an empty garage', () => {
+    expect(bestAvailableAvg([88], avgs)).toBeNull()
+    expect(bestAvailableAvg([], avgs)).toBeNull()
+  })
+})
+
+describe('computeUsage', () => {
+  it('counts picks in completed races only', () => {
+    const usage = computeUsage(
+      [
+        { race_id: 'r1', car_number: 11 },
+        { race_id: 'r1', car_number: 5 },
+        { race_id: 'r2', car_number: 11 },
+        { race_id: 'r3', car_number: 11 }, // upcoming: hidden info, excluded
+      ],
+      new Set(['r1', 'r2']),
+    )
+    expect(usage.get(11)).toBe(2)
+    expect(usage.get(5)).toBe(1)
+    expect(usage.get(24)).toBeUndefined()
   })
 })
 

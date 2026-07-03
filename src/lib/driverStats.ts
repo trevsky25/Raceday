@@ -57,6 +57,35 @@ export function ageFrom(birthDate: string | null | undefined, now = new Date()):
   return age
 }
 
+/** The best (lowest) career avg finish among cars still available for a race.
+ *  Returns null when nothing available has track history. */
+export function bestAvailableAvg(
+  availableCarNumbers: number[],
+  avgByCar: Map<number, number | null>,
+): number | null {
+  let best: number | null = null
+  for (const n of availableCarNumbers) {
+    const avg = avgByCar.get(n)
+    if (avg != null && (best === null || avg < best)) best = avg
+  }
+  return best
+}
+
+/** How many entries have already burned each car in COMPLETED races.
+ *  Picks for upcoming races are hidden by RLS, so this only ever counts
+ *  public information. */
+export function computeUsage(
+  picks: { race_id: string; car_number: number }[],
+  completedRaceIds: Set<string>,
+): Map<number, number> {
+  const usage = new Map<number, number>()
+  for (const p of picks) {
+    if (!completedRaceIds.has(p.race_id)) continue
+    usage.set(p.car_number, (usage.get(p.car_number) ?? 0) + 1)
+  }
+  return usage
+}
+
 /** Color accent per manufacturer, used by avatars and badges. */
 export function manufacturerColor(manufacturer: string | null | undefined): string {
   switch ((manufacturer ?? '').toLowerCase()) {
